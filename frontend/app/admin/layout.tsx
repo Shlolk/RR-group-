@@ -1,5 +1,8 @@
+"use client"
+
 import type { ReactNode } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { AdminNav } from "@/components/admin/admin-nav"
 import { StaffGuard } from "@/components/auth/staff-guard"
 import { buttonVariants } from "@/components/ui/button"
@@ -7,6 +10,13 @@ import { ArrowLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname()
+  const isLoginPage = pathname === "/admin/login"
+
+  if (isLoginPage) {
+    return <StaffGuard>{children}</StaffGuard>
+  }
+
   return (
     <StaffGuard>
       <div className="min-h-svh bg-muted/30">
