@@ -10,7 +10,7 @@ import { Badge, badgeVariants } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { formatPrice } from "@/components/store/store-provider"
 import type { ApiOrder, ApiTicket } from "@/lib/api-types"
-import { Package, ShieldCheck, Ticket, Truck } from "lucide-react"
+import { Package, ShieldCheck, Ticket, Truck, ArrowRight } from "lucide-react"
 
 const statusVariant: Record<string, "warning" | "accent" | "success" | "destructive" | "outline"> = {
   placed: "warning",
@@ -68,6 +68,26 @@ export default function DashboardPage() {
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
         </div>
+      )}
+
+      {user?.role && ["SUPER_ADMIN", "ADMIN", "MANAGER", "STAFF"].includes(user.role) && (
+        <Link
+          href="/admin-panel"
+          className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 p-4 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950 dark:hover:bg-emerald-900"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-emerald-600 text-white">
+              <ShieldCheck className="size-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-emerald-900 dark:text-emerald-100">Admin Panel</p>
+              <p className="text-xs text-emerald-700 dark:text-emerald-300">
+                Manage orders, products, users, content & more
+              </p>
+            </div>
+          </div>
+          <ArrowRight className="size-5 text-emerald-600" />
+        </Link>
       )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

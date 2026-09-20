@@ -2,7 +2,8 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { CreditCard, LayoutDashboard, LifeBuoy, MapPin, Package, Settings } from "lucide-react"
+import { CreditCard, LayoutDashboard, LifeBuoy, MapPin, Package, Settings, ShieldCheck } from "lucide-react"
+import { useAuth } from "@/components/providers/auth-provider"
 import { cn } from "@/lib/utils"
 
 const links = [
@@ -16,6 +17,7 @@ const links = [
 
 export function DashboardNav() {
   const pathname = usePathname()
+  const { isStaff } = useAuth()
 
   return (
     <nav className="flex flex-row gap-1 overflow-x-auto lg:flex-col" aria-label="Dashboard">
@@ -35,6 +37,20 @@ export function DashboardNav() {
           </Link>
         )
       })}
+      {isStaff && (
+        <Link
+          href="/admin-panel"
+          className={cn(
+            "flex items-center gap-2.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition-colors",
+            pathname.startsWith("/admin")
+              ? "bg-emerald-600 text-white"
+              : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100",
+          )}
+        >
+          <ShieldCheck className="size-4" />
+          Admin Panel
+        </Link>
+      )}
     </nav>
   )
 }
