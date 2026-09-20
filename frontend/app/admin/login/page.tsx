@@ -28,6 +28,12 @@ export default function AdminLoginPage() {
             Sign in as customer
           </Link>
         </p>
+        <p className="mt-2 text-center text-sm text-muted-foreground">
+          Need an admin account?{" "}
+          <Link href="/admin/signup" className="font-medium text-emerald-600 hover:underline dark:text-emerald-400">
+            Register here
+          </Link>
+        </p>
       </div>
     </div>
   )

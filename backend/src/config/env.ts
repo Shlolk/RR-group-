@@ -40,6 +40,8 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000),
   RATE_LIMIT_MAX: z.coerce.number().default(200),
   LOG_LEVEL: z.string().default("info"),
+
+  ADMIN_SECRET: z.string().default("rrgroup-admin-2024"),
 })
 
 const parsed = envSchema.safeParse(process.env)

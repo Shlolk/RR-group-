@@ -9,7 +9,7 @@ export function StaffGuard({ children, skip }: { children: React.ReactNode; skip
   const router = useRouter()
   const pathname = usePathname()
 
-  const isLoginPage = pathname === "/admin/login"
+  const isLoginPage = pathname === "/admin/login" || pathname === "/admin/signup"
 
   useEffect(() => {
     if (skip || isLoginPage) return

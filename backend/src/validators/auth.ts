@@ -32,6 +32,19 @@ export const resetPasswordSchema = z.object({
     .max(72, "Password cannot be longer than 72 characters"),
 })
 
+export const adminRegisterSchema = z.object({
+  email: z.string().email("Please provide a valid email address"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(72, "Password cannot be longer than 72 characters"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  phone: z.string().optional(),
+  role: z.enum(["SUPER_ADMIN", "ADMIN", "MANAGER", "STAFF"]).default("STAFF"),
+  adminSecret: z.string().min(1, "Admin secret is required"),
+})
+
 export const profileUpdateSchema = z.object({
   firstName: z.string().min(1).optional(),
   lastName: z.string().min(1).optional(),

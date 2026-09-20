@@ -4,6 +4,7 @@ import * as authService from "@/services/auth/auth.service"
 import {
   loginSchema,
   registerSchema,
+  adminRegisterSchema,
   firebaseLoginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
@@ -24,6 +25,26 @@ export async function registerHandler(req: Request, res: Response, next: NextFun
     const input = registerSchema.parse(req.body)
     const user = await authService.register(input)
     return success(res, user, "Account created successfully", 201)
+  } catch (err) {
+    next(err)
+  }
+}
+
+export async function adminRegisterHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const input = adminRegisterSchema.parse(req.body)
+    if (input.adminSecret !== env.ADMIN_SECRET) {
+      return success(res, null, "Invalid admin secret", 403)
+    }
+    const user = await authService.register({
+      email: input.email,
+      password: input.password,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      phone: input.phone,
+      role: input.role,
+    })
+    return success(res, user, "Admin account created successfully", 201)
   } catch (err) {
     next(err)
   }

@@ -1,6 +1,7 @@
 import { Router } from "express"
 import {
   registerHandler,
+  adminRegisterHandler,
   loginHandler,
   firebaseLoginHandler,
   logoutHandler,
@@ -14,6 +15,7 @@ import { authRateLimiter } from "@/middlewares/rate-limit"
 const router = Router()
 
 router.post("/register", authRateLimiter, registerHandler)
+router.post("/admin-register", authRateLimiter, adminRegisterHandler)
 router.post("/login", authRateLimiter, loginHandler)
 router.post("/firebase-login", authRateLimiter, firebaseLoginHandler)
 router.post("/logout", requireAuth, logoutHandler)
