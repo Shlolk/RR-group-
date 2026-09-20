@@ -2,8 +2,9 @@
 // Configure via NEXT_PUBLIC_WHATSAPP_NUMBER; falls back to the footer contact number.
 const FALLBACK_WHATSAPP_NUMBER = "919938844331"
 const rawNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^\d]/g, "") || ""
-export const isWhatsAppConfigured = Boolean(rawNumber)
 const WHATSAPP_NUMBER = rawNumber || FALLBACK_WHATSAPP_NUMBER
+
+export const isWhatsAppConfigured = Boolean(WHATSAPP_NUMBER)
 
 export function whatsappUrl(message?: string) {
   if (!isWhatsAppConfigured && typeof window !== "undefined") {
