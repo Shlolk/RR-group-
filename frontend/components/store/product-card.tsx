@@ -36,7 +36,7 @@ export function ProductCard({
     <motion.article
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-lg hover:shadow-primary/[0.06]"
     >
       <div className="relative aspect-square overflow-hidden bg-muted">
         <Link href={`/shop/products/${product.slug}`} aria-label={product.name}>

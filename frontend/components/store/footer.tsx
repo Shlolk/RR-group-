@@ -60,7 +60,7 @@ const socials = [
         },
       ]
     : []),
-  { icon: Mail, label: "Email", href: "mailto:contact@rrgroup.example" },
+  { icon: Mail, label: "Email", href: "mailto:rrgroup.official@zohomail.in" },
   { icon: AtSign, label: "Contact", href: "/contact" },
 ]
 
@@ -125,7 +125,7 @@ export function Footer() {
                 <Phone className="size-4 text-primary" /> <a href="tel:+919938844331" className="hover:text-primary hover:underline">+91 9938844331</a>
               </li>
               <li className="flex items-center gap-2">
-                <Mail className="size-4 text-primary" /> support@rrgroup.example
+                <Mail className="size-4 text-primary" /> rrgroup.official@zohomail.in
               </li>
             </ul>
           </div>

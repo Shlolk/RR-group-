@@ -29,13 +29,23 @@ const timeline = [
 export default function AboutPage() {
   return (
     <>
-      <section className="border-b border-border bg-foreground text-background">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-          <p className="text-sm font-semibold uppercase tracking-wide text-cyan-300">About RR GROUP</p>
-          <h1 className="mt-2 max-w-3xl font-display text-4xl font-bold tracking-tight sm:text-5xl">
+      <section className="relative overflow-hidden border-b border-white/10 bg-foreground text-background">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-violet-600/10"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:py-20">
+          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-cyan-200">
+            <span aria-hidden className="h-px w-6 bg-white/20" /> About RR GROUP
+          </p>
+          <h1 className="mt-3 max-w-3xl font-display text-4xl font-bold tracking-tighter sm:text-5xl">
             A technology partner for companies that want to grow with software
           </h1>
-          <p className="mt-5 max-w-2xl text-lg text-background/70">
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-background/65">
             RR GROUP is a digital technology and business solutions company. We build websites,
             business systems and marketing engines — together, not as disconnected projects.
           </p>
@@ -78,9 +88,14 @@ export default function AboutPage() {
               { icon: Users, title: "CRM Solutions", text: "Revenue and retention" },
               { icon: Megaphone, title: "Digital Marketing", text: "Measured growth" },
             ].map((s) => (
-              <div key={s.title} className="rounded-2xl border border-border bg-card p-6">
-                <s.icon className="size-6 text-primary" />
-                <dt className="mt-3 font-display text-lg font-bold text-foreground">{s.title}</dt>
+              <div
+                key={s.title}
+                className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/15 hover:shadow-md"
+              >
+                <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/10">
+                  <s.icon className="size-5" />
+                </span>
+                <dt className="mt-3 font-display text-lg font-bold tracking-tight text-foreground">{s.title}</dt>
                 <dd className="mt-1 text-sm text-muted-foreground">{s.text}</dd>
               </div>
             ))}
@@ -88,15 +103,20 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-card">
+      <section className="border-y border-border/40 bg-muted/30">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
           <SectionHeader eyebrow="Our Principles" title="What we believe" />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {values.map((v) => (
-              <div key={v.title} className="rounded-2xl border border-border bg-background p-6">
-                <v.icon className="size-6 text-primary" />
-                <h3 className="mt-3 font-display text-lg font-bold text-foreground">{v.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{v.text}</p>
+              <div
+                key={v.title}
+                className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/15 hover:shadow-md"
+              >
+                <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/10">
+                  <v.icon className="size-5" />
+                </span>
+                <h3 className="mt-3 font-display text-lg font-bold tracking-tight text-foreground">{v.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{v.text}</p>
               </div>
             ))}
           </div>
@@ -107,13 +127,16 @@ export default function AboutPage() {
         <SectionHeader eyebrow="The Journey" title="How an engagement runs" />
         <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {timeline.map((t, i) => (
-            <li key={t.title} className="relative rounded-2xl border border-border bg-card p-6">
-              <span className="flex size-8 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground">
+            <li
+              key={t.title}
+              className="relative rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/15 hover:shadow-md"
+            >
+              <span className="flex size-8 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground shadow-sm">
                 {i + 1}
               </span>
-              <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-primary">{t.year}</p>
-              <h3 className="mt-1 font-display text-base font-bold text-foreground">{t.title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{t.text}</p>
+              <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-primary">{t.year}</p>
+              <h3 className="mt-1 font-display text-base font-bold tracking-tight text-foreground">{t.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{t.text}</p>
             </li>
           ))}
         </ol>

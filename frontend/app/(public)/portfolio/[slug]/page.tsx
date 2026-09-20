@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowRight, CheckCircle2, Layers } from "lucide-react"
+import { ArrowRight, CheckCircle2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { CtaSection } from "@/components/site/cta-section"
 import { loadPortfolio, loadPortfolioProject } from "@/lib/data"
@@ -53,8 +53,14 @@ export default async function PortfolioDetailPage({ params }: Params) {
 
       {/* Cover */}
       <section className="mx-auto max-w-7xl px-4 pt-12">
-        <div className="flex aspect-[21/9] items-center justify-center rounded-3xl border border-border bg-gradient-to-br from-primary/15 via-background to-cyan-400/15">
-          <Layers className="size-16 text-primary/50" />
+        <div className="relative flex aspect-[21/9] items-center justify-center overflow-hidden rounded-3xl border border-border">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={project.image}
+            alt={project.title}
+            className="h-full w-full object-cover"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
       </section>
 

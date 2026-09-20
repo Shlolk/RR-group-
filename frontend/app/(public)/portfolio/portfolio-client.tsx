@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, Layers, Search } from "lucide-react"
+import { ArrowRight, Search } from "lucide-react"
 import { CtaSection } from "@/components/site/cta-section"
 import { portfolioCategories, type PortfolioCategory, type PortfolioProject } from "@/lib/content-data"
 import { cn } from "@/lib/utils"
@@ -61,8 +61,14 @@ export function PortfolioClient({ projects }: { projects: PortfolioProject[] }) 
                 href={`/portfolio/${p.slug}`}
                 className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/50"
               >
-                <div className="relative flex aspect-video items-center justify-center bg-gradient-to-br from-primary/10 via-background to-cyan-400/10">
-                  <Layers className="size-10 text-primary/50" />
+                <div className="relative aspect-video overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
                 <div className="flex flex-1 flex-col p-6">
                   <span className="text-xs font-semibold uppercase tracking-wide text-primary">{p.category}</span>

@@ -15,23 +15,28 @@ export function SectionHeader({
   linkLabel?: string
 }) {
   return (
-    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {eyebrow && (
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>
+          <p className="mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary">
+            <span aria-hidden className="h-px w-6 bg-primary/30" />
+            {eyebrow}
+          </p>
         )}
-        <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           {title}
         </h2>
-        {description && <p className="mt-2 max-w-2xl text-muted-foreground">{description}</p>}
+        {description && (
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">{description}</p>
+        )}
       </div>
       {href && (
         <Link
           href={href}
-          className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          className="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition-all hover:border-primary/20 hover:bg-primary hover:text-primary-foreground hover:shadow-md"
         >
           {linkLabel}
-          <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+          <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
         </Link>
       )}
     </div>

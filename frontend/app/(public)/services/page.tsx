@@ -25,13 +25,23 @@ export default async function ServicesPage() {
   const services = await loadServices()
   return (
     <>
-      <section className="border-b border-border bg-foreground text-background">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-          <p className="text-sm font-semibold uppercase tracking-wide text-cyan-300">What We Offer</p>
-          <h1 className="mt-2 max-w-2xl font-display text-4xl font-bold tracking-tight sm:text-5xl">
+      <section className="relative overflow-hidden border-b border-white/10 bg-foreground text-background">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-violet-600/10"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:py-20">
+          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-cyan-200">
+            <span aria-hidden className="h-px w-6 bg-white/20" /> What We Offer
+          </p>
+          <h1 className="mt-3 max-w-2xl font-display text-4xl font-bold tracking-tighter sm:text-5xl">
             Services designed to drive measurable growth
           </h1>
-          <p className="mt-4 max-w-2xl text-background/70">
+          <p className="mt-4 max-w-2xl leading-relaxed text-background/65">
             Four focused practices — web development, ERP, CRM and digital marketing — that work
             together as one connected system for your business.
           </p>
@@ -45,7 +55,7 @@ export default async function ServicesPage() {
             return (
               <article
                 key={s.slug}
-                className="flex flex-col rounded-2xl border border-border bg-card p-8 transition-colors hover:border-primary/40"
+                className="group flex flex-col rounded-2xl border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/15 hover:shadow-lg hover:shadow-primary/[0.06]"
               >
                 <div className="flex items-center gap-4">
                   <span className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">

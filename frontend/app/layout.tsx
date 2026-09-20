@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/rrlogo.jpeg',
+        url: '/icon-32x32.png',
         sizes: '32x32',
         type: 'image/png',
       },
@@ -38,11 +38,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
+  colorScheme: 'light',
+  themeColor: [{ media: '(prefers-color-scheme: light)', color: 'white' }],
 }
 
 export default function RootLayout({
@@ -51,8 +48,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${manrope.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="en" className={`${inter.variable} ${manrope.variable} light`}>
+      <body className="font-sans antialiased bg-background">
         <AuthProvider>
           <StoreProvider>{children}</StoreProvider>
         </AuthProvider>

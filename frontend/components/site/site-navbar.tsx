@@ -213,7 +213,7 @@ export function SiteNavbar() {
             >
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-2">
-                  <img src="/logo.png" alt="RR GROUP" width={36} height={36} className="size-9 rounded-lg object-contain bg-white p-1" />
+                  <img src="/rrlogo.jpeg" alt="RR GROUP" width={36} height={36} className="size-9 rounded-lg object-contain bg-white p-1" />
                 </span>
                 <Button
                   variant="ghost"
