@@ -1,0 +1,100 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Badge } from "@/components/ui/badge"
+import { ApiError, getErrorMessage } from "@/lib/api"
+import { fetchAdminCoupons } from "@/lib/services/admin"
+
+type Coupon = {
+  id: string
+  code: string
+  type?: string
+  discountType?: string
+  value: number | string
+  isActive?: boolean
+  active?: boolean
+  expiresAt?: string | null
+  createdAt?: string
+}
+
+export default function AdminCouponsPage() {
+  const [items, setItems] = useState<Coupon[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let mounted = true
+    fetchAdminCoupons()
+      .then((res) => {
+        if (!mounted) return
+        const data = res as unknown as { items: Coupon[] } | Coupon[]
+        const list = Array.isArray(data) ? data : (data.items ?? [])
+        setItems(list)
+      })
+      .catch((err) => {
+        if (!mounted) return
+        if (err instanceof ApiError && err.status === 404) {
+          setItems([])
+        } else {
+          setError(getErrorMessage(err))
+        }
+      })
+      .finally(() => mounted && setLoading(false))
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-display text-2xl font-bold tracking-tight">Coupons</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Discount codes and promotions</p>
+      </div>
+
+      {error && (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No coupons yet.</p>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-border bg-card">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-border bg-muted/50 text-xs uppercase text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3 font-medium">Code</th>
+                <th className="px-4 py-3 font-medium">Type</th>
+                <th className="px-4 py-3 font-medium">Value</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Expires</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {items.map((c) => {
+                const active = c.isActive ?? c.active ?? true
+                return (
+                  <tr key={c.id}>
+                    <td className="px-4 py-3 font-mono font-medium">{c.code}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{c.type ?? c.discountType ?? "—"}</td>
+                    <td className="px-4 py-3">{String(c.value)}</td>
+                    <td className="px-4 py-3">
+                      <Badge variant={active ? "success" : "outline"}>{active ? "Active" : "Inactive"}</Badge>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {c.expiresAt ? new Date(c.expiresAt).toLocaleDateString() : "—"}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}

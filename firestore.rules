@@ -1,0 +1,162 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Helpers ---------------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.super_admin == true ||
+        request.auth.token.admin == true
+      );
+    }
+    function isStaff() {
+      return isSignedIn() && (
+        request.auth.token.super_admin == true ||
+        request.auth.token.admin == true ||
+        request.auth.token.manager == true ||
+        request.auth.token.staff == true
+      );
+    }
+    function isOwner(uid) {
+      return resource == null || resource.data.uid == uid;
+    }
+
+    // ---- Users (self) ----------------------------------------------------
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isStaff());
+      allow write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ---- Roles - derived via custom claims; read/verify server-side -------
+    match /roles/{role} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ---- Public catalog & content ----------------------------------------
+    match /services/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /projects/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /portfolioProjects/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /blogPosts/{doc} {
+      allow read: if request.auth == null && resource.data.isPublished == true || isStaff();
+      allow create: if isStaff();
+      allow update, delete: if isStaff();
+    }
+    match /faqs/{doc} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+    match /testimonials/{doc} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+    match /products/{doc} {
+      allow read: if resource == null || resource.data.isActive == true;
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+    match /categories/{doc} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+    match /coupons/{doc} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ---- Customer-owned data (strict isolation) --------------------------
+    match /customers/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isStaff());
+      allow write: if isSignedIn() && request.auth.uid == uid;
+    }
+    match /addresses/{uid} {
+      allow read, write: if isSignedIn() && isOwner(uid);
+    }
+    match /carts/{uid} {
+      allow read, write: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+    }
+    match /wishlists/{uid} {
+      allow read, write: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+    }
+    match /orders/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isStaff());
+      allow write: if isSignedIn() && (request.auth.uid == uid || isStaff());
+    }
+    match /invoices/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isStaff());
+    }
+    match /payments/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isStaff());
+    }
+    match /supportTickets/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isStaff());
+      allow create: if isSignedIn() && request.auth.uid == uid;
+      allow update: if isSignedIn() && (request.auth.uid == uid || isStaff());
+    }
+    match /notifications/{uid} {
+      allow read, write: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    // ---- Global collections (staff-managed) ------------------------------
+    match /leads/{doc} {
+      allow read, write: if isStaff();
+      allow create: if true; // public lead capture
+    }
+    match /contactInquiries/{doc} {
+      allow read, write: if isStaff();
+      allow create: if true; // public contact form
+    }
+    match /newsletterSubscribers/{doc} {
+      allow create: if true;
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+    match /careerApplications/{doc} {
+      allow read: if isStaff();
+      allow create: if true; // public application
+    }
+    match /departments/{doc} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+    match /employees/{doc} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+    match /campaigns/{doc} {
+      allow read: if isStaff();
+      allow write: if isStaff();
+    }
+    match /auditLogs/{doc} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+    match /messages/{doc} {
+      allow read, write: if isSignedIn() && (request.auth.uid == doc.data.senderUid || request.auth.uid == doc.data.recipientUid || isStaff());
+    }
+    match /chatConversations/{doc} {
+      allow read: if isSignedIn();
+    }
+    match /chatMessages/{doc} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ---- Catch-all: deny -------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
