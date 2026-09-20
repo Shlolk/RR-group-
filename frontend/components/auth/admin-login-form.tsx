@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { getErrorMessage } from "@/lib/api"
 import { useAuth } from "@/components/providers/auth-provider"
+import { ShieldCheck, ArrowLeft } from "lucide-react"
 
-export function LoginForm() {
+export function AdminLoginForm() {
   const { login } = useAuth()
   const router = useRouter()
   const [email, setEmail] = useState("")
@@ -21,8 +22,13 @@ export function LoginForm() {
     setError(null)
     setLoading(true)
     try {
-      await login(email, password)
-      router.push("/dashboard")
+      const user = await login(email, password)
+      const STAFF_ROLES = ["SUPER_ADMIN", "ADMIN", "MANAGER", "STAFF"]
+      if (STAFF_ROLES.includes(user.role)) {
+        router.push("/admin-panel")
+      } else {
+        setError("Access denied — staff accounts only.")
+      }
     } catch (err) {
       setError(getErrorMessage(err))
     } finally {
@@ -38,22 +44,22 @@ export function LoginForm() {
         </div>
       )}
       <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium text-foreground">
+        <label htmlFor="admin-email" className="text-sm font-medium text-foreground">
           Email
         </label>
         <Input
-          id="email"
+          id="admin-email"
           type="email"
           required
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder="admin@rrgroup.example"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label htmlFor="password" className="text-sm font-medium text-foreground">
+          <label htmlFor="admin-password" className="text-sm font-medium text-foreground">
             Password
           </label>
           <Link href="/forgot-password" className="text-xs text-primary hover:underline">
@@ -61,7 +67,7 @@ export function LoginForm() {
           </Link>
         </div>
         <Input
-          id="password"
+          id="admin-password"
           type="password"
           required
           autoComplete="current-password"
@@ -70,9 +76,23 @@ export function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <Button type="submit" size="lg" className="w-full" disabled={loading}>
-        {loading ? "Signing in…" : "Sign in"}
+      <Button type="submit" size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={loading}>
+        {loading ? (
+          "Signing in…"
+        ) : (
+          <>
+            <ShieldCheck className="mr-2 size-4" />
+            Sign in as Admin
+          </>
+        )}
       </Button>
+      <Link
+        href="/login"
+        className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="size-3.5" />
+        Back to user login
+      </Link>
     </form>
   )
 }

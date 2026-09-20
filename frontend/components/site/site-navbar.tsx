@@ -142,20 +142,28 @@ export function SiteNavbar() {
                         <p className="truncate text-xs text-muted-foreground">{user.email}</p>
                       </div>
                       <div className="py-1">
-                        <Link
-                          href={isStaff ? "/admin" : "/dashboard"}
-                          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted"
-                        >
-                          <LayoutDashboard className="size-4" /> {isStaff ? "Admin Panel" : "My Dashboard"}
-                        </Link>
                         {isStaff && (
                           <Link
-                            href="/dashboard"
-                            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted"
+                            href="/admin-panel"
+                            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950"
                           >
-                            <LayoutDashboard className="size-4" /> Customer View
+                            <LayoutDashboard className="size-4" /> Admin Panel
                           </Link>
                         )}
+                        {isStaff && (
+                          <Link
+                            href="/admin"
+                            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted"
+                          >
+                            <LayoutDashboard className="size-4" /> Classic Admin
+                          </Link>
+                        )}
+                        <Link
+                          href="/dashboard"
+                          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-foreground hover:bg-muted"
+                        >
+                          <LayoutDashboard className="size-4" /> {isStaff ? "Customer View" : "My Dashboard"}
+                        </Link>
                         <button
                           type="button"
                           onClick={logout}
@@ -243,11 +251,27 @@ export function SiteNavbar() {
               <div className="mt-auto flex flex-col gap-2 pt-6">
                 {isAuthenticated && user ? (
                   <>
+                    {isStaff && (
+                      <Link
+                        href="/admin-panel"
+                        className={cn(buttonVariants({ variant: "outline" }), "w-full border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200")}
+                      >
+                        Admin Panel
+                      </Link>
+                    )}
+                    {isStaff && (
+                      <Link
+                        href="/admin"
+                        className={cn(buttonVariants({ variant: "outline" }), "w-full")}
+                      >
+                        Classic Admin
+                      </Link>
+                    )}
                     <Link
-                      href={isStaff ? "/admin" : "/dashboard"}
+                      href="/dashboard"
                       className={cn(buttonVariants({ variant: "outline" }), "w-full")}
                     >
-                      {isStaff ? "Admin Panel" : "My Dashboard"}
+                      {isStaff ? "Customer View" : "My Dashboard"}
                     </Link>
                     <button className={buttonVariants({ variant: "ghost" })} onClick={logout}>
                       <LogOut className="size-4" /> Sign out

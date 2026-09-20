@@ -1,21 +1,26 @@
 "use client"
 
 import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "@/components/providers/auth-provider"
 
-export function StaffGuard({ children }: { children: React.ReactNode }) {
+export function StaffGuard({ children, skip }: { children: React.ReactNode; skip?: boolean }) {
   const { isAuthenticated, isStaff, loading } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
+
+  const isLoginPage = pathname === "/admin/login"
 
   useEffect(() => {
+    if (skip || isLoginPage) return
     if (!loading && !isAuthenticated) {
-      router.replace("/login?next=/admin")
+      router.replace("/admin/login")
     } else if (!loading && !isStaff) {
       router.replace("/dashboard")
     }
-  }, [loading, isAuthenticated, isStaff, router])
+  }, [loading, isAuthenticated, isStaff, router, skip, isLoginPage])
 
+  if (skip || isLoginPage) return <>{children}</>
   if (loading || !isAuthenticated || !isStaff) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
