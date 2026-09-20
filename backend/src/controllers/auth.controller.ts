@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express"
-import { success } from "@/utils/api"
+import { success, AppError } from "@/utils/api"
 import * as authService from "@/services/auth/auth.service"
 import {
   loginSchema,
@@ -34,7 +34,7 @@ export async function adminRegisterHandler(req: Request, res: Response, next: Ne
   try {
     const input = adminRegisterSchema.parse(req.body)
     if (input.adminSecret !== env.ADMIN_SECRET) {
-      return success(res, null, "Invalid admin secret", 403)
+      throw new AppError(403, "INVALID_SECRET", "Invalid admin secret key")
     }
     const user = await authService.register({
       email: input.email,

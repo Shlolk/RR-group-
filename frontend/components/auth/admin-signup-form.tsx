@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { getApiBase } from "@/lib/api"
+import { getErrorMessage } from "@/lib/api"
 import { ShieldCheck, ArrowLeft } from "lucide-react"
 
 export function AdminSignupForm() {
@@ -28,7 +28,7 @@ export function AdminSignupForm() {
     setError(null)
     setLoading(true)
     try {
-      const res = await fetch(`${getApiBase()}/auth/admin-register`, {
+      const res = await fetch("/api/auth/admin-register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
