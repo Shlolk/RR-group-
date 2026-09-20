@@ -2,8 +2,6 @@
 
 > Premium e-commerce + business platform for RR GROUP — web development, ERP, CRM, digital marketing, and a full-featured store with Firebase backend.
 
-![RR GROUP](frontend/public/rrlogo.jpeg)
-
 **Live Stack:** Next.js 16 (Turbopack) + React 19 · Express 4 + Firebase Admin (Firestore, Auth, Storage) · Razorpay / Stripe · pnpm
 
 ---
