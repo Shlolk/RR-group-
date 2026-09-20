@@ -1,0 +1,126 @@
+# RR GROUP — Render Blueprint
+# Deploy both services by connecting this repo in Render:
+#   https://dashboard.render.com/blueprints  →  "New Blueprint Instance" → select repo
+#
+# IMPORTANT:
+#   * The Firebase admin credentials and payment/email/chatbot secrets below use
+#     `sync: false` — after the first deploy, set each value in the Render
+#     dashboard (Service → Environment) and they will NOT be overwritten by syncs.
+#   * Fill NEXT_PUBLIC_FIREBASE_* for the frontend before the first build
+#     (these are public client values — safe to commit, but keep the dashboard
+#     as source of truth).
+
+services:
+  # =======================  Backend API  =======================
+  - type: web
+    name: rr-group-backend
+    runtime: node
+    plan: free
+    rootDirectory: backend
+    nodeVersion: 22.16.0
+    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    startCommand: node dist/server.js
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        sync: false
+      - key: SESSION_COOKIE_NAME
+        value: rr_session
+      - key: BACKEND_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+
+      # Firebase Admin SDK (inline values — no file exists on Render)
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        sync: false
+
+      # Payments (optional)
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PUBLIC_KEY
+        sync: false
+
+      # AI Chatbot (optional)
+      - key: AI_PROVIDER
+        value: openai
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_MODEL
+        value: gpt-4o-mini
+
+      # Email (Resend or SMTP)
+      - key: EMAIL_PROVIDER
+        value: resend
+      - key: EMAIL_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        value: "RR GROUP <no-reply@rrgroup.example>"
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+
+  # =======================  Frontend (Next.js)  =======================
+  - type: web
+    name: rr-group-frontend
+    runtime: node
+    plan: free
+    rootDirectory: frontend
+    nodeVersion: 22.16.0
+    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      # Proxies /api/* server-side to the backend service
+      - key: BACKEND_URL
+        fromService:
+          name: rr-group-backend
+          type: web
+          property: url
+
+      # Firebase client config (public — safe)
+      - key: NEXT_PUBLIC_FIREBASE_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+        sync: false
+      - key: NEXT_PUBLIC_FIREBASE_APP_ID
+        sync: false
+
+      # Public Razorpay key id
+      - key: NEXT_PUBLIC_RAZORPAY_KEY_ID
+        sync: false
+
+      # WhatsApp (digits only, country code first)
+      - key: NEXT_PUBLIC_WHATSAPP_NUMBER
+        sync: false

@@ -168,7 +168,7 @@ pnpm dev          # next dev (Turbopack) → http://localhost:3000
 | Dir | Command | Description |
 |-----|---------|-------------|
 | `backend` | `pnpm dev` | `tsx watch src/server.ts` |
-| `backend` | `pnpm build` | `tsc` → `dist/` |
+| `backend` | `pnpm build` | `tsc && tsc-alias` → `dist/` |
 | `backend` | `pnpm start` | `node dist/server.js` |
 | `backend` | `pnpm seed` | `tsx scripts/seed.ts` |
 | `backend` | `pnpm lint` | `eslint src` (0 errors) |
@@ -196,9 +196,44 @@ All frontend calls go to same-origin `/api/*` and are proxied by `next.config.mj
 
 ## Deployment
 
-- **Frontend:** Vercel — set `BACKEND_URL` to your API origin, and all `NEXT_PUBLIC_*` vars.
-- **Backend:** Any Node host (Render, Fly, Cloud Run) — set `FIREBASE_SERVICE_ACCOUNT_PATH` to a secret file path or inline `FIREBASE_PRIVATE_KEY` (escaped `\n`), `JWT_SECRET`, and `FRONTEND_URL` (CORS).
-- **Firestore Rules:** `firestore.rules` already enforces `request.auth.uid == resource.data.userId` for customer collections — deploy with `firebase deploy --only firestore:rules`.
+### Render (recommended — Blueprint)
+
+A `render.yaml` at the repo root deploys both services:
+
+1. Push this repo to GitHub (already at `https://github.com/Shlolk/RR-group-`).
+2. In Render → **New → Blueprint**, paste that repo URL and follow the wizard.
+3. Set the `sync: false` env vars once in the dashboard (see below) — Blueprint syncs will never overwrite them.
+
+**Backend (`rr-group-backend`)** — set:
+- `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` (inline service-account values; the private key keeps `\n` escaped as `\\n`), or `GOOGLE_APPLICATION_CREDENTIALS`
+- `JWT_SECRET` (long random string), `BACKEND_URL` (e.g. `https://rr-group-backend.onrender.com`), `FRONTEND_URL` (the frontend URL, CORS)
+- Optional: `RAZORPAY_*`, `STRIPE_*`, `AI_API_KEY`, `EMAIL_API_KEY`/`SMTP_*`
+
+**Frontend (`rr-group-frontend`)** — set:
+- `NEXT_PUBLIC_FIREBASE_*` (client config values from the Firebase console web app)
+- `NEXT_PUBLIC_RAZORPAY_KEY_ID`, `NEXT_PUBLIC_WHATSAPP_NUMBER`
+- `BACKEND_URL` is filled automatically via `fromService` in the Blueprint.
+
+The frontend proxies `/api/*` → `BACKEND_URL` server-side (`next.config.mjs`), and cookies stay same-origin, so no extra CORS config is needed beyond `FRONTEND_URL` on the backend.
+
+> **Free tier:** Render spins the free instances down after ~15 min of inactivity (cold starts take ~50s). Paid tier keeps them hot.
+> The backend `dist/` build uses `tsc-alias` (`pnpm build` = `tsc && tsc-alias`) because TypeScript doesn't rewrite the `@/*` path aliases itself — do not change `startCommand` to a plain `tsc` build.
+
+### Docker (alternative to the Blueprint)
+
+`backend/Dockerfile` and `frontend/Dockerfile` build production images (multi-stage, prod-only deps). Either deploy them from Render's **New → Docker** flow or point the Blueprint services at them. Image run commands: backend `node dist/server.js` (port 10000), frontend `next start` (port 3000).
+
+### Vercel (frontend only)
+
+Set `BACKEND_URL` to your API origin, and all `NEXT_PUBLIC_*` vars.
+
+### Backend on any Node host
+
+Set `FIREBASE_SERVICE_ACCOUNT_PATH` to a secret file path or inline `FIREBASE_PRIVATE_KEY` (escaped `\n`), `JWT_SECRET`, and `FRONTEND_URL` (CORS).
+
+### Firestore Rules
+
+`firestore.rules` enforces `request.auth.uid == resource.data.userId` for customer collections — deploy with `firebase deploy --only firestore:rules`.
 
 ---
 
